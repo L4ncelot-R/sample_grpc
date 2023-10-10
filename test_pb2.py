@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ntest.proto\"6\n\tMessage_t\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\t\x12\x0f\n\x07message\x18\x03 \x01(\t\"\x1d\n\nReceived_t\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x35\n\tService_t\x12(\n\x0b\x43ommunicate\x12\n.Message_t\x1a\x0b.Received_t\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ntest.proto\"\x7f\n\x07message\x12\x0f\n\x07\x66rom_ip\x18\x01 \x01(\t\x12\x11\n\tfrom_port\x18\x02 \x01(\t\x12\r\n\x05to_ip\x18\x03 \x01(\t\x12\x0f\n\x07to_port\x18\x04 \x01(\t\x12\x0f\n\x07message\x18\x05 \x01(\t\x12\x0c\n\x04hash\x18\x06 \x01(\x0c\x12\x11\n\ttimestamp\x18\x07 \x01(\x03\"\x1d\n\nReceived_t\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32,\n\tService_t\x12\x1f\n\x04Send\x12\x08.message\x1a\x0b.Received_t\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,10 +21,10 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'test_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _globals['_MESSAGE_T']._serialized_start=14
-  _globals['_MESSAGE_T']._serialized_end=68
-  _globals['_RECEIVED_T']._serialized_start=70
-  _globals['_RECEIVED_T']._serialized_end=99
-  _globals['_SERVICE_T']._serialized_start=101
-  _globals['_SERVICE_T']._serialized_end=154
+  _globals['_MESSAGE']._serialized_start=14
+  _globals['_MESSAGE']._serialized_end=141
+  _globals['_RECEIVED_T']._serialized_start=143
+  _globals['_RECEIVED_T']._serialized_end=172
+  _globals['_SERVICE_T']._serialized_start=174
+  _globals['_SERVICE_T']._serialized_end=218
 # @@protoc_insertion_point(module_scope)

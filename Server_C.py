@@ -8,14 +8,14 @@ import test_pb2_grpc as pb2_grpc
 import threading
 
 address_book = [
-    ("192.168.31.163", "50051"),  # first element is the ip address of the server
+    ("192.168.31.163", "50053"),  # first element is the ip address of the server
     ("192.168.31.163", "50052"),
-    ("192.168.31.163", "50053"),
+    ("192.168.31.163", "50051"),
 ]
 
 timeout_cache = {}
 
-timeout_cache_lock = threading.Lock()
+cache_lock = threading.Lock()
 
 
 class MyService(pb2_grpc.Service_tServicer):
@@ -55,11 +55,10 @@ def response_message(request):
 
 
 def update_timeout(hash_val):
-    with timeout_cache_lock:
+    with cache_lock:
         if hash_val in timeout_cache.keys():
             return False
         else:
-            print(f"Added {hash_val} to cache")
             timeout_cache[hash_val] = int(time.mktime(time.gmtime())) + 300
             return True
 
@@ -67,12 +66,12 @@ def update_timeout(hash_val):
 def clear_timeout():
     while True:
         items_to_remove = []
-        with timeout_cache_lock:
+        with cache_lock:
             for hash_val, timestamp in timeout_cache.items():
                 if timestamp < int(time.mktime(time.gmtime())):
                     items_to_remove.append(hash_val)
 
-        with timeout_cache_lock:
+        with cache_lock:
             for item in items_to_remove:
                 timeout_cache.pop(item)
                 print(f"removed {item[0]} from cache")

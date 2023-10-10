@@ -1,19 +1,28 @@
+import hashlib
+import pickle
+import time
 import grpc
 from concurrent import futures
 import test_pb2 as pb2
 import test_pb2_grpc as pb2_grpc
+import threading
 
 address_book = [
-    ("127.0.0.1", "50052"),  # first element is the ip address of the server
-    ("127.0.0.1", "50051"),
+    ("192.168.31.163", "50052"),  # first element is the ip address of the server
+    ("192.168.31.163", "50051"),
+    ("192.168.31.163", "50053"),
 ]
+
+timeout_cache = {}
+
+cache_lock = threading.Lock()
 
 
 class MyService(pb2_grpc.Service_tServicer):
-    def Communicate(self, request, context):
-        peer_info = context.peer()
-        forward_message(request.ip, request.port, request.message, peer_info)
+    def Send(self, request, context):
+        forward_message(request)
         return pb2.Received_t(success=True)
+
 
 def run_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -24,17 +33,67 @@ def run_server():
     server.wait_for_termination()
 
 
-def forward_message(ip, port, message, peer_info):
-    if ip == address_book[0][0] and port == address_book[0][1]:
-        from_ip, from_port = peer_info.split(':')[1], peer_info.split(':')[2]
-        print(f"Message received from {from_ip}:{from_port}: {message}")
-    else:
-        for address in address_book[1:]:
-            with grpc.insecure_channel(f"{address[0]}:{address[1]}") as channel:
-                stub = pb2_grpc.Service_tStub(channel)
-                stub.Communicate(pb2.Message_t(ip=ip, port=port, message=message))
-                print(f"Message forwarded to {address[0]}:{address[1]}")
+def forward_message(request):
+    if not update_timeout(request.hash):
+        return
+
+    if request.to_ip == address_book[0][0] and request.to_port == address_book[0][1]:
+        request = response_message(request)
+
+    broadcast(request)
+
+
+def response_message(request):
+    print(f"Message received from {request.from_ip}:{request.from_port}: {request.message}")
+    message = pb2.message(from_ip=request.to_ip,
+                          from_port=request.to_port,
+                          to_ip=request.from_ip,
+                          to_port=request.from_port,
+                          message="Hello from server reply")
+    message.hash = hashlib.sha256(pickle.dumps(message)).digest()
+    return message
+
+
+def update_timeout(hash_val):
+    with cache_lock:
+        if hash_val in timeout_cache.keys():
+            return False
+        else:
+            timeout_cache[hash_val] = int(time.mktime(time.gmtime())) + 300
+            return True
+
+
+def clear_timeout():
+    while True:
+        items_to_remove = []
+        with cache_lock:
+            for hash_val, timestamp in timeout_cache.items():
+                if timestamp < int(time.mktime(time.gmtime())):
+                    items_to_remove.append(hash_val)
+
+        with cache_lock:
+            for item in items_to_remove:
+                timeout_cache.pop(item)
+                print(f"removed {item[0]} from cache")
+
+        time.sleep(10)
+
+
+def broadcast(message):
+    for address in address_book[1:]:
+        with grpc.insecure_channel(f"{address[0]}:{address[1]}") as channel:
+            stub = pb2_grpc.Service_tStub(channel)
+            stub.Send(message)
+            print(f"Message broadcast to {address[0]}:{address[1]}")
+
 
 
 if __name__ == '__main__':
-    run_server()
+    server_thread = threading.Thread(target=run_server)
+    cache_thread = threading.Thread(target=clear_timeout)
+
+    server_thread.start()
+    cache_thread.start()
+
+    server_thread.join()
+    cache_thread.join()

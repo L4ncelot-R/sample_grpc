@@ -14,9 +14,9 @@ class Service_tStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.Communicate = channel.unary_unary(
-                '/Service_t/Communicate',
-                request_serializer=test__pb2.Message_t.SerializeToString,
+        self.Send = channel.unary_unary(
+                '/Service_t/Send',
+                request_serializer=test__pb2.message.SerializeToString,
                 response_deserializer=test__pb2.Received_t.FromString,
                 )
 
@@ -24,7 +24,7 @@ class Service_tStub(object):
 class Service_tServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def Communicate(self, request, context):
+    def Send(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,9 +33,9 @@ class Service_tServicer(object):
 
 def add_Service_tServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'Communicate': grpc.unary_unary_rpc_method_handler(
-                    servicer.Communicate,
-                    request_deserializer=test__pb2.Message_t.FromString,
+            'Send': grpc.unary_unary_rpc_method_handler(
+                    servicer.Send,
+                    request_deserializer=test__pb2.message.FromString,
                     response_serializer=test__pb2.Received_t.SerializeToString,
             ),
     }
@@ -49,7 +49,7 @@ class Service_t(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def Communicate(request,
+    def Send(request,
             target,
             options=(),
             channel_credentials=None,
@@ -59,8 +59,8 @@ class Service_t(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/Service_t/Communicate',
-            test__pb2.Message_t.SerializeToString,
+        return grpc.experimental.unary_unary(request, target, '/Service_t/Send',
+            test__pb2.message.SerializeToString,
             test__pb2.Received_t.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

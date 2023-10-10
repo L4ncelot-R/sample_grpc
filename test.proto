@@ -1,14 +1,18 @@
 syntax = "proto3";
 
 service Service_t {
-  rpc Communicate (Message_t) returns (Received_t) {}
+  rpc Send (message) returns (Received_t) {}
 }
 
-message Message_t {
-  string ip = 1;
-  string port = 2;
-  string message = 3;
+message message {
+  string from_ip = 1;
+  string from_port = 2;
+  string to_ip = 3;
+  string to_port = 4;
+  string message = 5;
+  bytes hash = 6;
 }
+
 
 message Received_t {
   bool success = 1;
