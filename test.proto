@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+service Service_t {
+  rpc Communicate (Message_t) returns (Received_t) {}
+}
+
+message Message_t {
+  string ip = 1;
+  string port = 2;
+  string message = 3;
+}
+
+message Received_t {
+  bool success = 1;
+}
