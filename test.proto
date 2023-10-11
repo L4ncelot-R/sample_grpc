@@ -2,17 +2,25 @@ syntax = "proto3";
 
 service Service_t {
   rpc Send (message) returns (Received_t) {}
+  rpc Subscribe (subscription) returns (Received_t) {}
+  rpc Unsubscribe (subscription) returns (Received_t) {}
+  rpc Publish (message) returns (Received_t) {}
 }
 
 message message {
-  string from_ip = 1;
-  string from_port = 2;
-  string to_ip = 3;
-  string to_port = 4;
-  string message = 5;
-  bytes hash = 6;
+  string topic = 1;
+  map<string, answers> message = 2;
 }
 
+message subscription {
+  string ip = 1;
+  string port = 2;
+  string topic = 3;
+}
+
+message answers {
+  repeated string answer = 1;
+}
 
 message Received_t {
   bool success = 1;

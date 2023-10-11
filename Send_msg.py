@@ -1,8 +1,6 @@
-import pickle
 import grpc
 import test_pb2 as pb2
 import test_pb2_grpc as pb2_grpc
-import hashlib
 
 
 def run_client():
@@ -12,14 +10,9 @@ def run_client():
         stub = pb2_grpc.Service_tStub(channel)
 
         # Create a Message_t instance with your desired information
-        message = pb2.message(from_ip='192.168.31.163',
-                              from_port='50051',
-                              to_ip='192.168.31.163',
-                              to_port='50053',
-                              message='Hello from client')
-        message.hash = hashlib.sha256(pickle.dumps(message)).digest()
-        # Call the Communicate method of the Service_t service
-        response = stub.Send(message)
+        ans = pb2.answers(answer=("I dont know", "I dont care"))
+        publish_item = pb2.message(topic="Topic A", message={"What is the answer to this question?": ans})
+        response = stub.Publish(publish_item)
         print(response)
 
 

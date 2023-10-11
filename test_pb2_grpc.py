@@ -19,6 +19,21 @@ class Service_tStub(object):
                 request_serializer=test__pb2.message.SerializeToString,
                 response_deserializer=test__pb2.Received_t.FromString,
                 )
+        self.Subscribe = channel.unary_unary(
+                '/Service_t/Subscribe',
+                request_serializer=test__pb2.subscription.SerializeToString,
+                response_deserializer=test__pb2.Received_t.FromString,
+                )
+        self.Unsubscribe = channel.unary_unary(
+                '/Service_t/Unsubscribe',
+                request_serializer=test__pb2.subscription.SerializeToString,
+                response_deserializer=test__pb2.Received_t.FromString,
+                )
+        self.Publish = channel.unary_unary(
+                '/Service_t/Publish',
+                request_serializer=test__pb2.message.SerializeToString,
+                response_deserializer=test__pb2.Received_t.FromString,
+                )
 
 
 class Service_tServicer(object):
@@ -30,11 +45,44 @@ class Service_tServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def Subscribe(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Unsubscribe(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Publish(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_Service_tServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'Send': grpc.unary_unary_rpc_method_handler(
                     servicer.Send,
+                    request_deserializer=test__pb2.message.FromString,
+                    response_serializer=test__pb2.Received_t.SerializeToString,
+            ),
+            'Subscribe': grpc.unary_unary_rpc_method_handler(
+                    servicer.Subscribe,
+                    request_deserializer=test__pb2.subscription.FromString,
+                    response_serializer=test__pb2.Received_t.SerializeToString,
+            ),
+            'Unsubscribe': grpc.unary_unary_rpc_method_handler(
+                    servicer.Unsubscribe,
+                    request_deserializer=test__pb2.subscription.FromString,
+                    response_serializer=test__pb2.Received_t.SerializeToString,
+            ),
+            'Publish': grpc.unary_unary_rpc_method_handler(
+                    servicer.Publish,
                     request_deserializer=test__pb2.message.FromString,
                     response_serializer=test__pb2.Received_t.SerializeToString,
             ),
@@ -60,6 +108,57 @@ class Service_t(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/Service_t/Send',
+            test__pb2.message.SerializeToString,
+            test__pb2.Received_t.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Subscribe(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Service_t/Subscribe',
+            test__pb2.subscription.SerializeToString,
+            test__pb2.Received_t.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Unsubscribe(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Service_t/Unsubscribe',
+            test__pb2.subscription.SerializeToString,
+            test__pb2.Received_t.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Publish(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/Service_t/Publish',
             test__pb2.message.SerializeToString,
             test__pb2.Received_t.FromString,
             options, channel_credentials,
