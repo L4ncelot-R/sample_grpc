@@ -1,7 +1,6 @@
 syntax = "proto3";
 
 service Service_t {
-  rpc Send (message) returns (Received_t) {}
   rpc Subscribe (subscription) returns (Received_t) {}
   rpc Unsubscribe (subscription) returns (Received_t) {}
   rpc Publish (message) returns (Received_t) {}

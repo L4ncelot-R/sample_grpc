@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ntest.proto\"z\n\x07message\x12\r\n\x05topic\x18\x01 \x01(\t\x12&\n\x07message\x18\x02 \x03(\x0b\x32\x15.message.MessageEntry\x1a\x38\n\x0cMessageEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x17\n\x05value\x18\x02 \x01(\x0b\x32\x08.answers:\x02\x38\x01\"7\n\x0csubscription\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\t\x12\r\n\x05topic\x18\x03 \x01(\t\"\x19\n\x07\x61nswers\x12\x0e\n\x06\x61nswer\x18\x01 \x03(\t\"\x1d\n\nReceived_t\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\xa8\x01\n\tService_t\x12\x1f\n\x04Send\x12\x08.message\x1a\x0b.Received_t\"\x00\x12)\n\tSubscribe\x12\r.subscription\x1a\x0b.Received_t\"\x00\x12+\n\x0bUnsubscribe\x12\r.subscription\x1a\x0b.Received_t\"\x00\x12\"\n\x07Publish\x12\x08.message\x1a\x0b.Received_t\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\ntest.proto\"z\n\x07message\x12\r\n\x05topic\x18\x01 \x01(\t\x12&\n\x07message\x18\x02 \x03(\x0b\x32\x15.message.MessageEntry\x1a\x38\n\x0cMessageEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\x17\n\x05value\x18\x02 \x01(\x0b\x32\x08.answers:\x02\x38\x01\"7\n\x0csubscription\x12\n\n\x02ip\x18\x01 \x01(\t\x12\x0c\n\x04port\x18\x02 \x01(\t\x12\r\n\x05topic\x18\x03 \x01(\t\"\x19\n\x07\x61nswers\x12\x0e\n\x06\x61nswer\x18\x01 \x03(\t\"\x1d\n\nReceived_t\x12\x0f\n\x07success\x18\x01 \x01(\x08\x32\x87\x01\n\tService_t\x12)\n\tSubscribe\x12\r.subscription\x1a\x0b.Received_t\"\x00\x12+\n\x0bUnsubscribe\x12\r.subscription\x1a\x0b.Received_t\"\x00\x12\"\n\x07Publish\x12\x08.message\x1a\x0b.Received_t\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -34,5 +34,5 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _globals['_RECEIVED_T']._serialized_start=222
   _globals['_RECEIVED_T']._serialized_end=251
   _globals['_SERVICE_T']._serialized_start=254
-  _globals['_SERVICE_T']._serialized_end=422
+  _globals['_SERVICE_T']._serialized_end=389
 # @@protoc_insertion_point(module_scope)
