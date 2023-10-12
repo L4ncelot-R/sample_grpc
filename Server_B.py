@@ -7,7 +7,7 @@ if __name__ == '__main__':
     subscription = server.get_subscription("Topic A")
 
     server_thread = threading.Thread(target=server.run)
-    subscribe_thread = threading.Thread(target=server.send_subscribe, args=(subscription, "127.0.0.1", "50053"))
+    subscribe_thread = threading.Thread(target=Server.send_subscribe, args=(subscription, "127.0.0.1", "50053"))
 
     server_thread.start()
     subscribe_thread.start()

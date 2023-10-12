@@ -2,13 +2,56 @@ import grpc
 from concurrent import futures
 import test_pb2 as pb2
 import test_pb2_grpc as pb2_grpc
+import threading
 
 
 def get_message(topic, question, answers):
     return pb2.message(topic=topic, message={question: pb2.answers(answer=answers)})
 
 
-class Server:
+def publish_to_address(ip, port, request, retry=3):
+    attempt = 0
+    while attempt < retry:
+        try:
+            with grpc.insecure_channel(f'{ip}:{port}') as channel:
+                stub = pb2_grpc.Service_tStub(channel)
+                stub.Publish(request, timeout=5)
+                print(f"Published to {ip}:{port}")
+                return
+        except grpc.RpcError as e:
+            print(f"Failed to publish to {ip}:{port}")
+            attempt += 1
+
+
+def send_subscribe(subscription, ip, port, retry=3):
+    attempt = 0
+    while attempt < retry:
+        try:
+            with grpc.insecure_channel(f'{ip}:{port}') as channel:
+                stub = pb2_grpc.Service_tStub(channel)
+                stub.Subscribe(subscription, timeout=5)
+                print(f"subscribed to {ip}:{port}")
+                return
+        except grpc.RpcError as e:
+            print(f"Failed to subscribe to {ip}:{port}")
+            attempt += 1
+
+
+def send_unsubscribe(subscription, ip, port, retry=3):
+    attempt = 0
+    while attempt < retry:
+        try:
+            with grpc.insecure_channel(f'{ip}:{port}') as channel:
+                stub = pb2_grpc.Service_tStub(channel)
+                stub.Unsubscribe(subscription, timeout=5)
+                print(f"unsubscribed to {ip}:{port}")
+                return
+        except grpc.RpcError as e:
+            print(f"Failed to unsubscribe to {ip}:{port}")
+            attempt += 1
+
+
+class Server(pb2_grpc.Service_tServicer):
     def __init__(self, ip=None, port=None):
         self.ip = ip
         self.port = port
@@ -25,6 +68,7 @@ class Server:
 
     # when received a published message
     def Publish(self, request, context):
+        # TODO: update database/cache
         self.publish(request)
         return pb2.Received_t(success=True)
 
@@ -69,31 +113,22 @@ class Server:
                         is_updated = True
 
         if is_updated:
-            print(f"data updated: {self.data}")
             return True
         else:
             return False
 
-    def broadcast(self, request):
+    def broadcast(self, request, retry=3):
         if request.topic not in self.address_book.keys():
             return
+
+        threads = []
         for ip, port in self.address_book[request.topic]:
-            with grpc.insecure_channel(f'{ip}:{port}') as channel:
-                stub = pb2_grpc.Service_tStub(channel)
-                stub.Publish(request)
-                print(f"published to {ip}:{port}")
+            t = threading.Thread(target=publish_to_address, args=(ip, port, request, retry))
+            t.start()
+            threads.append(t)
 
-    def send_subscribe(self, subscription, ip, port):
-        with grpc.insecure_channel(f'{ip}:{port}') as channel:
-            stub = pb2_grpc.Service_tStub(channel)
-            stub.Subscribe(subscription)
-            print(f"subscribed to {ip}:{port}")
-
-    def send_unsubscribe(self, subscription, ip, port):
-        with grpc.insecure_channel(f'{ip}:{port}') as channel:
-            stub = pb2_grpc.Service_tStub(channel)
-            stub.Unsubscribe(subscription)
-            print(f"unsubscribed to {ip}:{port}")
+        for t in threads:
+            t.join()
 
     def run(self):
         server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
